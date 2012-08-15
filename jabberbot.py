@@ -232,6 +232,11 @@ class JabberBot(object):
             # Connection established - save connection
             self.conn = conn
 
+            # Register given handlers (TODO move to own function)
+            for (handler, callback) in self.handlers:
+                self.conn.RegisterHandler(handler, callback)
+                self.log.debug('Registered handler: %s' % handler)
+
             # Send initial presence stanza (say hello to everyone)
             self.conn.sendInitPresence()
             # Save roster and log Items
@@ -240,11 +245,6 @@ class JabberBot(object):
             for contact in self.roster.getItems():
                 self.log.info('  %s' % contact)
             self.log.info('*** roster ***')
-
-            # Register given handlers (TODO move to own function)
-            for (handler, callback) in self.handlers:
-                self.conn.RegisterHandler(handler, callback)
-                self.log.debug('Registered handler: %s' % handler)
 
         return self.conn
 
