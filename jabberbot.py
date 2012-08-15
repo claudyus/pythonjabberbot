@@ -93,7 +93,7 @@ class JabberBot(object):
 
     def __init__(self, username, password, res=None, debug=False,
             privatedomain=False, acceptownmsgs=False, handlers=None,
-            command_prefix=''):
+            command_prefix='', server=None, port=5222):
         """Initializes the jabber bot and sets up commands.
 
         username and password should be clear ;)
@@ -129,6 +129,10 @@ class JabberBot(object):
         # TODO sort this initialisation thematically
         self.__debug = debug
         self.log = logging.getLogger(__name__)
+        if server is not None:
+            self.__server = (server, port)
+        else:
+            self.__server = None
         self.__username = username
         self.__password = password
         self.jid = xmpp.JID(self.__username)
@@ -205,7 +209,10 @@ class JabberBot(object):
                 conn = xmpp.Client(self.jid.getDomain(), debug=[])
 
             #connection attempt
-            conres = conn.connect()
+            if self.__server:
+                conres = conn.connect(self.__server)
+            else:
+                conres = conn.connect()
             if not conres:
                 self.log.error('unable to connect to server %s.' %
                         self.jid.getDomain())
