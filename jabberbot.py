@@ -642,6 +642,9 @@ class JabberBot(object):
         # FIXME i am not threadsafe
         self.__threads[jid] = mess.getThread()
 
+        #remove multiple spaces
+        re.sub(' +', ' ', text)
+
         if ' ' in text:
             command, args = text.split(' ', 1)
         else:
